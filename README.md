@@ -1,14 +1,19 @@
 # Postal for Node
 
+** 
+documentation in progress for migration to TypeScript.  
+TS version works similar to the original nodeJS version below, just follow the types.  
+**  
+
 This library helps you send e-mails through the open source mail delivery
-platform, [Postal](https://github.com/atech/postal) in Node.
+platform, [Postal](https://github.com/BetterCorp/node-postal) in Node.
 
 ## Installation
 
 Install the library using [NPM](https://www.npmjs.com/):
 
 ```
-$ npm install @atech/postal --save
+$ npm install @bettercorp/postal --save
 ```
 
 ## Usage
@@ -17,19 +22,18 @@ Sending an email is very simple. Just follow the example below. Before you can
 begin, you'll need to login to your installation's web interface and generate
 new API credentials.
 
-```javascript
+```typescript
 // Include the Postal library
-var Postal = require('@atech/postal');
+import { SendMessage as PostalClient } from '@bettercorp/postal';
 
 // Create a new Postal client using a server key generated using your
 // installation's web interface
-var client = new Postal.Client('https://postal.yourdomain.com', 'your-api-key');
+const client = new PostalClient('postal.yourdomain.com', 'your-api-key');
 
 // Create a new message
-var message = new Postal.SendMessage(client);
+let message = client.to('john@example.com');
 
 // Add some recipients
-message.to('john@example.com');
 message.to('mary@example.com');
 message.cc('mike@example.com');
 message.bcc('secret@awesomeapp.com');
@@ -46,24 +50,11 @@ message.plainBody('Hello world!');
 message.htmlBody('<p>Hello world!</p>');
 
 // Add any custom headers
-message.header('X-PHP-Test', 'value');
+//message.header('X-PHP-Test', 'value');
 
 // Attach any files
 message.attach('textmessage.txt', 'text/plain', 'Hello world!');
 
 // Send the message and get the result
-message.send()
-  .then(function (result) {
-    var recipients = result.recipients();
-    // Loop through each of the recipients to get the message ID
-    for (var email in recipients) {
-      var message = recipients[email];
-      console.log(message.id());    // Logs the message ID
-      console.log(message.token()); // Logs the message's token
-    }
-  }).catch(function (error) {
-    // Do something with the error
-    console.log(error.code);
-    console.log(error.message);
-  });
+await message.send()
 ```
